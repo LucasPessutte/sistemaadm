@@ -9,6 +9,12 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 ?>
 
 <div class="container-fluid">
+    <?php
+    if (isset($_SESSION['msg'])) {
+        echo $_SESSION['msg'];
+        unset($_SESSION['msg']);
+    }
+    ?>
     <div class="card shadow mb-4" style="height: 100%;">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary text">Consultar <span class="text-complete">Clientes</span></h6>
@@ -42,7 +48,10 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <td><?= $row['email'] ?></td>
                                 <td><?= $row['cidade'] ?></td>
                                 <td><?= $row['estado'] ?></td>
-                                <td>edittar</td>
+                                <td class="text-center">
+                                    <a href=""><i class="far fa-edit"></i></a>
+                                    <a href="" class="pl-2"><i class="fas fa-trash"></i></a>
+                                </td>
                             </tr>
 
                         <?php }
@@ -50,16 +59,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </div>
 
-<?php
-if (isset($_SESSION['msg'])) {
-    echo $_SESSION['msg'];
-    unset($_SESSION['msg']);
-}
-?>
 
 <!-- Modal -->
 <div class="modal fade" id="cadastroCliente" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
@@ -142,6 +146,87 @@ if (isset($_SESSION['msg'])) {
     </div>
 </div>
 
+<div class="modal fade" id="editarCliente" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="./php/clientes/cadastro.php" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cadastro de Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id_cliente" id="id_cliente">
+                    <div class="row row-modal">
+                        <div class="col-6">
+                            <input type="text" name="nome_edit" id="nome_edit" class="form-control" placeholder="Nome" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="cpf" name="cpf_edit" id="cpf_edit" class="form-control" placeholder="000.000.000-00" required>
+                        </div>
+                    </div>
+                    <div class="row row-modal">
+                        <div class="col-4">
+                            <input type="text" name="email_id" id="email_id" class="form-control" placeholder="exemplo@exemplo.com" required>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" name="celular_id" id="celular_id" class="form-control" placeholder="(00) 00000-0000" required>
+                        </div>
+                        <div class="col-4">
+                            <input type="number" step="0.01" name="limiteCredito" onkeyup="casasDecimais(this)" class="form-control" placeholder="R$ 0.00">
+                        </div>
+                    </div>
+                    <div class="row row-modal">
+                        <div class="col-4">
+                            <input type="text" name="endereco" class="form-control" placeholder="Endereco" required>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" name="cidade" class="form-control" placeholder="Cidade" required>
+                        </div>
+                        <div class="col-4">
+                            <select id="estado" name="estado" class="form-control" required>
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espírito Santo</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option>
+                                <option value="EX">Estrangeiro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function() {
@@ -152,7 +237,7 @@ if (isset($_SESSION['msg'])) {
             }
         })
         $('input[name="cpf"]').mask('999.999.999-99')
-        $('input[name="celular"').mask('(99) 9 9999-9999')
+        $('input[name="celular]"').mask('(99) 9 9999-9999')
 
     })
 
@@ -178,5 +263,14 @@ if (isset($_SESSION['msg'])) {
         var result = value.substr(0, value.length - 2);
         result += '.' + value.substr(value.length - 2);
         obj.value = result;
+    }
+
+    async function edit(id_cliente){
+        await $.get('./php/clientes/getCliente?id_cliente=' + id_cliente,function(data){
+            var json = JSON.parse(data);
+            $('#nome_edit').val(json.nome);
+        })
+
+        $('#editarCliente').modal('show')
     }
 </script>
