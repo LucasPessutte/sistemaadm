@@ -5,7 +5,7 @@
     $nome = $_POST['nome'];
     $cpf = $_POST['cpf'];
     $email = $_POST['email'];
-    $celular = $_POST['celular'];
+    $telefone = $_POST['celular'];
     $limiteCredito = $_POST['limiteCredito'];
     $endereco = $_POST['endereco'];
     $cidade = $_POST['cidade'];
