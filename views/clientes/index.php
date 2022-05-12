@@ -51,7 +51,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <td><?= $row['estado'] ?></td>
                                 <td class="text-center">
                                     <a href="#" onclick="edit('<?= $row['codigo'] ?>')"><i class="far fa-edit"></i></a>
-                                    <a href="" class="pl-2"><i class="fas fa-trash"></i></a>
+                                    <a href="#" onclick="deleteCliente('<?= $row['codigo'] ?>')" class="pl-2"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
 
@@ -230,22 +230,22 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 
 <div class="modal fade" id="excluirCliente" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="./php/clientes/edit_cliente.php" method="POST">
+            <form action="./php/clientes/delete_cliente.php" method="POST">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edição de Cliente</h5>
+                    <h5 class="modal-title">Exclusão de Cliente</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id_cliente_delete" id="id_cliente_delete">
-                    <p>Você deseja realmente exluir o cliente <span id=""></p>
+                    <p>Você deseja realmente exluir o cliente <span class="text-primary" id="nome_cliente_delete"></span></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary">Excluir</button>
                 </div>
             </form>
         </div>
@@ -309,5 +309,16 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         })
 
         $('#editarCliente').modal('show')
+    }
+
+    async function deleteCliente(id_cliente) {
+        await $.get('php/clientes/getCliente.php?id_cliente=' + id_cliente, function(data) {
+            var json = JSON.parse(data);
+            console.log(data)
+            $('#id_cliente_delete').val(id_cliente);
+            $('#nome_cliente_delete').html(json.nome);
+        })
+
+        $('#excluirCliente').modal('show')
     }
 </script>

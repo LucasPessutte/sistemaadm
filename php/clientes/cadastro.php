@@ -16,12 +16,17 @@
 
     if(mysqli_insert_id($conn)){
         $_SESSION['msg'] = '<div class="alert alert-primary alert-dismissible fade show" role="alert">
-        <strong>Oloco, meu!</strong> Olha esse alerta animado, como é chique!
+        Cliente cadastrado com sucesso!
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>';
-      exit(header("Location: ../../index.html#clientes"));
+    }else{
+      $_SESSION['msg'] = '<div class="alert alert-primary alert-dismissible fade show" role="alert">
+      Erro ao cadastrar cliente!
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>';
     }
-
-?>
+    exit(header("Location: ../../index.html#clientes"));
