@@ -22,7 +22,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroCliente">
                     <i class="fas fa-plus"></i>
                     <span>Cadastrar Cliente</span>
-
                 </button>
             </div>
         </div>

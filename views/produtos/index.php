@@ -38,8 +38,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                             <th scope="col">Categoria</th>
                             <th scope="col">Preço</th>
                             <th scope="col">QTD. Estoque</th>
-                            <th scope="col">Unidade Medida</th>
-                            <th scope="col">Ações</th>
+                            <th scope="col">Ações</th>  
                         </tr>
                     </thead>
                     <tbody>
