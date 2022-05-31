@@ -150,7 +150,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id_vendedor_edit" id="id_vendedor_edit" value="<? $row['numero'] ?>">
+                    <input type="hidden" name="id_vendedor_edit" id="id_vendedor_edit">
                     <div class="row row-modal">
                         <div class="col-12">
                             <input type="text" name="nome_edit" id="nome_edit" class="form-control" placeholder="Nome" required>

@@ -1,6 +1,6 @@
 <?php
     include_once('../../conn/index.php');    
-    $numero = $_GET['numero'];
+    $numero = $_GET['id_venda'];
     
     $sql = "SELECT * FROM vendas WHERE numero = $numero";
     $res = mysqli_query($conn, $sql);
@@ -11,7 +11,7 @@
         $data['id_vendedor'] = $row['id_vendedor'];
         $data['id_cliente'] = $row['id_cliente'];
         $data['data'] = $row['data'];
-        $data['prazo_pagto'] = $row['prazo_pagto'];
+        $data['prazo_entrega'] = $row['prazo_entrega'];
         $data['cond_pagto'] = $row['cond_pagto'];
     }
 
