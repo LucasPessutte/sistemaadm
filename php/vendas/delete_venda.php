@@ -2,15 +2,11 @@
 session_start();
 include_once('../../conn/index.php');
 
-$numero = $_POST['numero_delete'];
+$id_venda = $_POST['id_venda_delete'];
 
-echo $numero;
+$sql = "DELETE FROM vendas WHERE numero = '$id_venda'";
 
-$sql = "DELETE FROM vendas WHERE numero = $numero";
-
-echo $sql;
 $res = mysqli_query($conn, $sql);
-
 
 if (mysqli_affected_rows($conn)) {
     $_SESSION['msg'] = '<div class="alert alert-primary alert-dismissible fade show" role="alert">

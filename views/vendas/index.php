@@ -44,14 +44,15 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                         while ($row = mysqli_fetch_array($res)) { ?>
 
                             <tr>
+                                <td><?= $row['numero'] ?></td>
                                 <td><?= $row['id_vendedor'] ?></td>
                                 <td><?= $row['id_cliente'] ?></td>
                                 <td><?= $row['data'] ?></td>
                                 <td><?= $row['prazo_pagto'] ?></td>
                                 <td><?= $row['cond_pagto'] ?></td>
                                 <td class="text-center">
-                                    <a href="#" onclick="edit('<?= $row['numero'] ?>')"><i class="far fa-edit"></i></a>
-                                    <a href="#" onclick="deleteVenda('<?= $row['numero'] ?>')" class="pl-2"><i class="fas fa-trash"></i></a>
+                                    <a href="#" onclick="edit(<?= $row['numero'] ?>)"><i class="far fa-edit"></i></a>
+                                    <a href="#" onclick="deleteVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
 
@@ -72,7 +73,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 <div class="modal fade" id="cadastroVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form action="index.php" method="POST">
+            <form action="./php/vendas/cadastro.php" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title">Cadastro de Venda</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
@@ -168,7 +169,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 <div class="modal fade" id="excluirVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="../php/vendas/delete_venda.php" method="POST">
+            <form action="./php/vendas/delete_venda.php" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title">Exclusão de Venda</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
@@ -190,11 +191,21 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 
 <script>
+    // $(document).ready(function() {
+    //     $('#dataTableVendedor').DataTable({
+    //         "language": {
+    //             "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json"
+
+    //         }
+    //     })
+    // })
+
     function edit(id_venda) {
         $.get('php/vendas/getVenda.php?id_venda=' + id_venda, function(data) {
             var json = JSON.parse(data);
             console.log(data)
-            $('#id_vendedor_edit').val(id_vendedor);
+            $('#id_venda_edit').val(id_venda);
+            $('#id_vendedor_edit').val(json.id_vendedor);
             $('#id_cliente_edit').val(json.id_cliente);
             $('#data_edit').val(json.data);
             $('#prazo_pagto_edit').val(json.prazo_pagto);
@@ -208,7 +219,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         await $.get('php/vendas/getVenda.php?id_venda=' + id_venda, function(data) {
             var json = JSON.parse(data);
             console.log(data)
-            $('#id_venda_delete').val(numero);
+            $('#id_venda_delete').val(id_venda);
         })
 
         $('#excluirVenda').modal('show')
