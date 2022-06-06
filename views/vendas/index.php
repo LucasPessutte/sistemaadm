@@ -191,15 +191,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 
 <script>
-    // $(document).ready(function() {
-    //     $('#dataTableVendedor').DataTable({
-    //         "language": {
-    //             "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json"
-
-    //         }
-    //     })
-    // })
-
     function edit(id_venda) {
         $.get('php/vendas/getVenda.php?id_venda=' + id_venda, function(data) {
             var json = JSON.parse(data);
