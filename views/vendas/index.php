@@ -31,7 +31,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <table class="table" id="dataTableVenda" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th scope="col">Número</th>
                             <th scope="col">ID Vendedor</th>
                             <th scope="col">ID Cliente</th>
                             <th scope="col">Data</th>
@@ -117,7 +116,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 
 <!-- EDITAR VENDA -->
-<div class="modal fade" id="editarVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+<!-- <div class="modal fade" id="editarVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="./php/vendas/edit_vendas.php" method="POST">
@@ -162,7 +161,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             </form>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- EXCLUIR VENDA -->
 <div class="modal fade" id="excluirVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
@@ -218,7 +217,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         await $.get('php/vendas/getVenda.php?id_venda=' + id_venda, function(data) {
             var json = JSON.parse(data);
             console.log(data)
-            $('#id_venda_delete').val(numero);
+            $('#id_venda_delete').val(id_venda);
         })
 
         $('#excluirVenda').modal('show')
