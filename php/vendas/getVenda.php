@@ -1,6 +1,6 @@
 <?php
     include_once('../../conn/index.php');    
-    $numero = $_GET['id_venda'];
+    $id_venda = $_GET['id_venda'];
     
     $sql = "SELECT * FROM vendas WHERE numero = $id_venda";
     $res = mysqli_query($conn, $sql);

@@ -3,6 +3,15 @@ include_once('../../conn/index.php');
 $sql = "SELECT * FROM vendas";
 $res = mysqli_query($conn, $sql);
 
+$sql_vendedor = "SELECT * FROM vendedor";
+$res_vendedor = mysqli_query($conn, $sql_vendedor);
+
+$sql_cliente = "SELECT * FROM cliente";
+$res_cliente = mysqli_query($conn, $sql_cliente);
+
+$sql_produtos = "SELECT * FROM produtos";
+$res_produtos = mysqli_query($conn, $sql_produtos);
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
@@ -36,6 +45,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                             <th scope="col">Data</th>
                             <th scope="col">Prazo de Pagamento</th>
                             <th scope="col">Condição de Pagamento</th>
+                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,7 +59,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <td><?= $row['prazo_entrega'] ?></td>
                                 <td><?= $row['cond_pagto'] ?></td>
                                 <td class="text-center">
-                                    <a href="#" onclick="edit(<?= $row['numero'] ?>)"><i class="far fa-edit"></i></a>
                                     <a href="#" onclick="deleteVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
@@ -81,20 +90,30 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <div class="modal-body">
                     <div class="row row-modal">
                         <div class="col-4">
-                            <input type="text" name="id_vendedor" class="form-control" placeholder="ID Vendedor" required>
+                            <select name="id_vendedor" id="id_vendedor" class="form-control" required>
+                                <option value="">Selecione um vendedor</option>
+                                <?php while ($row = mysqli_fetch_array($res_vendedor)) { ?>
+                                    <option value="<?= $row['cod'] ?>"><?= $row['nome'] ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                         <div class="col-4">
-                            <input type="text" id="" name="id_cliente" class="form-control" placeholder="ID Cliente" required>
+                            <select name="id_cliente" id="id_cliente" class="form-control" required>
+                                <option value="">Selecione um vendedor</option>
+                                <?php while ($row = mysqli_fetch_array($res_cliente)) { ?>
+                                    <option value="<?= $row['codigo'] ?>"><?= $row['nome'] ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                         <div class="col-4">
                             <input type="date" name="data" class="form-control" placeholder="DD/MM/AAAA">
                         </div>
                     </div>
                     <div class="row row-modal">
-                        <div class="col-4">
+                        <div class="col-6">
                             <input type="date" name="prazo_entrega" class="form-control" placeholder="Prazo de pagamento" required>
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
                             <select id="cond_pagto" name="cond_pagto" class="form-control" placeholder="Cidade" required>
                                 <option value="credito">Crédito</option>
                                 <option value="debito">Débito</option>
@@ -102,6 +121,47 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <option value="trasferencia">Transferência bancária</option>
                                 <option value="boleto">Boleto</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h4>Produtos</h4>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label for="">Produto</label>
+                        </div>
+                        <div class="col-2">
+                            <label for="">Preço</label>
+                        </div>
+                        <div class="col-4">
+                            <label for="">Qtd. Produtos</label>
+                        </div>
+                        <div class="col-2">
+                            <label for="">Mais</label>
+                        </div>
+                    </div>
+                    <input type="hidden" name="qtd_produtos" id="qtd_produtos" value="1">
+                    <div id="div-produtos">
+                        <div class="row produtos" id="produtos-1">
+                            <div class="col-4">
+                                <select name="id_produto_1" id="id_produto_1" onchange="selecionaProduto(this)" class="form-control" required>
+                                    <option value="">Selecione um produto</option>
+                                    <?php while ($row = mysqli_fetch_array($res_produtos)) { ?>
+                                        <option value="<?= $row['cod'] ?>"><?= $row['nome'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <input id="preco_produto_1" type="text" disabled class="form-control">
+                            </div>
+                            <div class="col-4">
+                                <input type="number" id="qtd_produto_1" name="qtd_produto_1" min="1" step="1" class="form-control">
+                            </div>
+                            <div class="col-2">
+                                <div class="btn btn-primary" onclick="adicionaProduto(this)"><i class="fas fa-plus-circle"></i></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -221,5 +281,29 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         })
 
         $('#excluirVenda').modal('show')
+    }
+
+    function selecionaProduto(obj){
+
+        var numeroProduto = obj.id.split('_')[2];
+        if(obj.value !== ""){
+            $.get('php/produtos/getProdutos.php?id_produto=' + obj.value,function(data){
+                var json = JSON.parse(data);
+                $('#preco_produto_' + numeroProduto).val(json.preco);
+                $('#qtd_produto_' + numeroProduto).attr('max', json.qtd_estoque)
+            })
+        }else{
+            $('#preco_produto_' + numeroProduto).val("");
+            $('#qtd_produto_' + numeroProduto).val('')
+            $('#qtd_produto_' + numeroProduto).removeAttr('max')
+        }
+    }
+
+
+    function adicionaProduto() {
+        var prox_produto = parseInt($('#div-produtos' + ' .produtos').last()[0].id.split("-")[1]) + 1;
+        var qtd_produtos = parseInt($('#qtd_produtos').val())
+
+
     }
 </script>

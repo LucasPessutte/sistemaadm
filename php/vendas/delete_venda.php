@@ -4,7 +4,7 @@ include_once('../../conn/index.php');
 
 $id_venda = $_POST['id_venda_delete'];
 
-$sql = "DELETE FROM vendas WHERE numero = '$id_venda'";
+$sql = "DELETE FROM vendas WHERE numero = $id_venda";
 
 $res = mysqli_query($conn, $sql);
 
