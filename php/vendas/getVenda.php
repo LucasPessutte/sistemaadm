@@ -10,7 +10,7 @@
         $data['id_vendedor'] = $row['id_vendedor'];
         $data['id_cliente'] = $row['id_cliente'];
         $data['data'] = $row['data'];
-        $data['prazo_entrega'] = $row['prazo_entrega'];
+        $data['prazo_pagto'] = $row['prazo_pagto'];
         $data['cond_pagto'] = $row['cond_pagto'];
     }
 

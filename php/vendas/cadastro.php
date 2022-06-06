@@ -5,10 +5,10 @@
     $id_vendedor = $_POST['id_vendedor'];
     $id_cliente = $_POST['id_cliente'];
     $data = $_POST['data'];
-    $prazo_entrega = $_POST['prazo_entrega'];
+    $prazo_pagto = $_POST['prazo_pagto'];
     $cond_pagto = $_POST['cond_pagto'];
 
-    $sql = "INSERT INTO vendas(id_vendedor,id_cliente,data,prazo_entrega,cond_pagto) VALUES('$id_vendedor', '$id_cliente', '$data', '$prazo_entrega', '$cond_pagto');";
+    $sql = "INSERT INTO vendas(id_vendedor,id_cliente,data,prazo_pagto,cond_pagto) VALUES('$id_vendedor', '$id_cliente', '$data', '$prazo_pagto', '$cond_pagto');";
     $res = mysqli_query($conn, $sql);
 
     if(mysqli_insert_id($conn)){

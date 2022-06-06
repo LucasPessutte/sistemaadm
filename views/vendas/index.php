@@ -56,7 +56,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <td><?= $row['id_vendedor'] ?></td>
                                 <td><?= $row['id_cliente'] ?></td>
                                 <td><?= $row['data'] ?></td>
-                                <td><?= $row['prazo_entrega'] ?></td>
+                                <td><?= $row['prazo_pagto'] ?></td>
                                 <td><?= $row['cond_pagto'] ?></td>
                                 <td class="text-center">
                                     <a href="#" onclick="deleteVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-trash"></i></a>
@@ -90,6 +90,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <div class="modal-body">
                     <div class="row row-modal">
                         <div class="col-4">
+                            <label for="id_vendedor">Vendedor</label>
                             <select name="id_vendedor" id="id_vendedor" class="form-control" required>
                                 <option value="">Selecione um vendedor</option>
                                 <?php while ($row = mysqli_fetch_array($res_vendedor)) { ?>
@@ -98,6 +99,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                             </select>
                         </div>
                         <div class="col-4">
+                            <label for="id_cliente">Cliente</label>
                             <select name="id_cliente" id="id_cliente" class="form-control" required>
                                 <option value="">Selecione um vendedor</option>
                                 <?php while ($row = mysqli_fetch_array($res_cliente)) { ?>
@@ -106,14 +108,17 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                             </select>
                         </div>
                         <div class="col-4">
-                            <input type="date" name="data" class="form-control" placeholder="DD/MM/AAAA">
+                            <label for="data">Data</label>
+                            <input type="date" name="data" id="data" class="form-control" placeholder="DD/MM/AAAA">
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-6">
-                            <input type="date" name="prazo_entrega" class="form-control" placeholder="Prazo de pagamento" required>
+                            <label for="prazo_pagto">Prazo pagamento</label>
+                            <input type="date" name="prazo_pagto" class="form-control" placeholder="Prazo de pagamento" required>
                         </div>
                         <div class="col-6">
+                            <label for="cond_pagto">Forma pagamento</label>
                             <select id="cond_pagto" name="cond_pagto" class="form-control" placeholder="Cidade" required>
                                 <option value="credito">Crédito</option>
                                 <option value="debito">Débito</option>
@@ -144,7 +149,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     </div>
                     <input type="hidden" name="qtd_produtos" id="qtd_produtos" value="1">
                     <div id="div-produtos">
-                        <div class="row produtos" id="produtos-1">
+                        <div class="row produtos pb-3" id="produtos-1">
                             <div class="col-4">
                                 <select name="id_produto_1" id="id_produto_1" onchange="selecionaProduto(this)" class="form-control" required>
                                     <option value="">Selecione um produto</option>
@@ -157,11 +162,18 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <input id="preco_produto_1" type="text" disabled class="form-control">
                             </div>
                             <div class="col-4">
-                                <input type="number" id="qtd_produto_1" name="qtd_produto_1" min="1" step="1" class="form-control">
+                                <input type="number" id="qtd_produto_1" name="qtd_produto_1" min="1" step="1" class="form-control" onchange="altera_valor_final()">
                             </div>
                             <div class="col-2">
-                                <div class="btn btn-primary" onclick="adicionaProduto(this)"><i class="fas fa-plus-circle"></i></div>
+                                <div class="btn btn-primary" id="button_plus" onclick="adicionaProduto(this)"><i class="fas fa-plus-circle"></i></div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="valor-final">Valor total</label>
+                            <input type="number" class="form-control" step="0.01" id="valor-final" disabled>
                         </div>
                     </div>
                 </div>
@@ -201,7 +213,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     </div>
                     <div class="row row-modal">
                         <div class="col-4">
-                            <input type="date" name="prazo_entrega_edit" id="prazo_entrega_edit" class="form-control" placeholder="Prazo de pagamento" required>
+                            <input type="date" name="prazo_pagto_edit" id="prazo_pagto_edit" class="form-control" placeholder="Prazo de pagamento" required>
                         </div>
                         <div class="col-4">
                             <select type="text" name="cond_pagto_edit" id="cond_pagto_edit" class="form-control" placeholder="Condição de pagamento" required>
@@ -249,6 +261,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 
 <script>
+    var valor_final = 0
+
     $(document).ready(function() {
         $('#dataTableVenda').DataTable({
             "language": {
@@ -266,7 +280,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             $('#id_vendedor').val(json.id_vendedor);
             $('#id_cliente_edit').val(json.id_cliente);
             $('#data_edit').val(json.data);
-            $('#prazo_entrega_edit').val(json.prazo_entrega);
+            $('#prazo_pagto_edit').val(json.prazo_pagto);
             $('#cond_pagto_edit').val(json.cond_pagto);
         })
 
@@ -283,27 +297,88 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         $('#excluirVenda').modal('show')
     }
 
-    function selecionaProduto(obj){
+    function selecionaProduto(obj) {
 
         var numeroProduto = obj.id.split('_')[2];
-        if(obj.value !== ""){
-            $.get('php/produtos/getProdutos.php?id_produto=' + obj.value,function(data){
+        if (obj.value !== "") {
+            $.get('php/produtos/getProdutos.php?id_produto=' + obj.value, function(data) {
                 var json = JSON.parse(data);
                 $('#preco_produto_' + numeroProduto).val(json.preco);
                 $('#qtd_produto_' + numeroProduto).attr('max', json.qtd_estoque)
             })
-        }else{
+        } else {
             $('#preco_produto_' + numeroProduto).val("");
             $('#qtd_produto_' + numeroProduto).val('')
             $('#qtd_produto_' + numeroProduto).removeAttr('max')
         }
+
+        altera_valor_final()
     }
 
 
-    function adicionaProduto() {
+    function adicionaProduto(obj) {
+        var complemento = obj.id.split("_");
+
+        if (complemento.includes('edit')) {
+            complemento = '-edit'
+        } else {
+            complemento = ''
+        }
+
         var prox_produto = parseInt($('#div-produtos' + ' .produtos').last()[0].id.split("-")[1]) + 1;
+        var qtd_produtos = parseInt($('#qtd_produtos' + complemento).val())
+
+        $.get('php/vendas/novoProduto.php?prox_produto=' + prox_produto, function(data) {
+            var div_insert = document.createElement('div')
+            div_insert.setAttribute('class', 'produtos')
+            div_insert.setAttribute('id', 'produtos-' + prox_produto + complemento)
+
+            div_insert.innerHTML = data
+
+            document.getElementById('div-produtos' + complemento).appendChild(div_insert)
+        })
+
+        qtd_produtos++
+        var qtd_produtos = $('#qtd_produtos' + complemento).val(qtd_produtos)
+
+        altera_valor_final(complemento)
+    }
+
+    function removeProduto(obj, id) {
+        var complemento = obj.id.split("_")
+
+        if (complemento.includes('edit')) {
+            complemento = '-edit'
+        } else {
+            complemento = ''
+        }
+
+        var div_remover = document.getElementById('produtos-' + id + complemento)
+        div_remover.parentNode.removeChild(div_remover)
+
         var qtd_produtos = parseInt($('#qtd_produtos').val())
+        qtd_produtos--
+        $('#qtd_produtos' + complemento).val(qtd_produtos)
 
+        altera_valor_final(complemento)
+    }
 
+    function altera_valor_final(complemento="") {
+        var qtd_produtos = parseInt($('#qtd_produtos' + complemento).val())
+        var qtd_produtos_aux = qtd_produtos
+
+        for (var i = 1; i <= qtd_produtos_aux; i++) {
+            if ($('#id_produto_' + i)) {
+                if($('#id_produto_' + i).val() !== ""){
+                    valor_final += parseFloat($('#preco_produto_' + i + complemento).val()) * parseInt($('#qtd_produto_' + i + complemento).val())
+                }
+            } else {
+                qtd_produtos_aux++
+            }
+        }
+
+        console.log(valor_final)
+
+        $('#valor-final' + complemento).val(valor_final.toFixed(2))
     }
 </script>
