@@ -31,7 +31,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <table class="table" id="dataTableVenda" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th scope="col">Número</th>
                             <th scope="col">ID Vendedor</th>
                             <th scope="col">ID Cliente</th>
                             <th scope="col">Data</th>
