@@ -43,14 +43,13 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                         while ($row = mysqli_fetch_array($res)) { ?>
 
                             <tr>
-                                <td><?= $row['numero'] ?></td>
                                 <td><?= $row['id_vendedor'] ?></td>
                                 <td><?= $row['id_cliente'] ?></td>
                                 <td><?= $row['data'] ?></td>
                                 <td><?= $row['prazo_pagto'] ?></td>
                                 <td><?= $row['cond_pagto'] ?></td>
                                 <td class="text-center">
-                                    <a href="#" onclick="edit(<?= $row['numero'] ?>)"><i class="far fa-edit"></i></a>
+                                    <!-- <a href="#" onclick="edit(<?= $row['numero'] ?>)"><i class="far fa-edit"></i></a> -->
                                     <a href="#" onclick="deleteVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
@@ -117,7 +116,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 
 <!-- EDITAR VENDA -->
-<div class="modal fade" id="editarVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+<!-- <div class="modal fade" id="editarVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="./php/vendas/edit_vendas.php" method="POST">
@@ -162,7 +161,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             </form>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- EXCLUIR VENDA -->
 <div class="modal fade" id="excluirVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
