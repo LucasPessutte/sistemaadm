@@ -56,7 +56,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <td><?= $row['id_vendedor'] ?></td>
                                 <td><?= $row['id_cliente'] ?></td>
                                 <td><?= $row['data'] ?></td>
-                                <td><?= $row['prazo_pagto'] ?></td>
+                                <td><?= $row['prazo_entrega'] ?></td>
                                 <td><?= $row['cond_pagto'] ?></td>
                                 <td class="text-center">
                                     <a href="#" onclick="deleteVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-trash"></i></a>
@@ -261,7 +261,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 
 <script>
-    var valor_final = 0
+    // var valor_final = 0
 
     $(document).ready(function() {
         $('#dataTableVenda').DataTable({
@@ -316,7 +316,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     }
 
 
-    function adicionaProduto(obj) {
+    async function adicionaProduto(obj) {
         var complemento = obj.id.split("_");
 
         if (complemento.includes('edit')) {
@@ -328,7 +328,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         var prox_produto = parseInt($('#div-produtos' + ' .produtos').last()[0].id.split("-")[1]) + 1;
         var qtd_produtos = parseInt($('#qtd_produtos' + complemento).val())
 
-        $.get('php/vendas/novoProduto.php?prox_produto=' + prox_produto, function(data) {
+        await $.get('php/vendas/novoProduto.php?prox_produto=' + prox_produto, function(data) {
             var div_insert = document.createElement('div')
             div_insert.setAttribute('class', 'produtos')
             div_insert.setAttribute('id', 'produtos-' + prox_produto + complemento)
@@ -364,16 +364,18 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     }
 
     function altera_valor_final(complemento="") {
+        var valor_final = 0;
         var qtd_produtos = parseInt($('#qtd_produtos' + complemento).val())
         var qtd_produtos_aux = qtd_produtos
 
         for (var i = 1; i <= qtd_produtos_aux; i++) {
-            if ($('#id_produto_' + i)) {
+            if ($('#id_produto_' + i).length) {
                 if($('#id_produto_' + i).val() !== ""){
                     valor_final += parseFloat($('#preco_produto_' + i + complemento).val()) * parseInt($('#qtd_produto_' + i + complemento).val())
                 }
             } else {
                 qtd_produtos_aux++
+                console.log('entrou')
             }
         }
 

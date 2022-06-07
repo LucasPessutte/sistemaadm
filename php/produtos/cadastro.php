@@ -30,4 +30,4 @@
       </button>
     </div>';
     }
-    exit(header("Location: ../../index.html#clientes"));
+    exit(header("Location: ../../index.html#produtos"));
