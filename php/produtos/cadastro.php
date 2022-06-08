@@ -6,11 +6,7 @@
     $nome = $_POST['nome'];
     $preco = $_POST['preco'];
     $qtd_estoque = $_POST['qtd_estoque'];
-    $telefone = $_POST['celular'];
-    $limiteCredito = $_POST['limiteCredito'];
-    $endereco = $_POST['endereco'];
-    $cidade = $_POST['cidade'];
-    $estado = $_POST['estado'];
+    $unidade_medida = $_POST['unidade_medida'];
 
     $sql = "INSERT INTO produtos(id_categoria,nome,preco,qtd_estoque,unidade_medida) VALUES($id_categoria,'$nome', '$preco', $qtd_estoque, '$unidade_medida');";
     $res = mysqli_query($conn, $sql);

@@ -2,36 +2,32 @@
 session_start();
 include_once('../../conn/index.php');
 
-$id_venda = $_POST['id_venda_delete'];
+$id_cliente = $_POST['id_produto_edit'];
 
+$id_categoria = $_POST['categoria_edit'];
+$nome = $_POST['nome_edit'];
+$preco = $_POST['preco_edit'];
+$qtd_estoque = $_POST['qtd_estoque'];
+$unidade_medida = $_POST['unidade_medida'];
 
-$sql = "SELECT * FROM intens_vendas WHERE id_venda = $id_venda";
+$sql = "UPDATE cliente SET nome = '$nome', cpf = '$cpf', email = '$email', telefone = '$telefone', limite_credito = '$limiteCredito', endereco = '$endereco', cidade = '$cidade', estado = '$estado' WHERE codigo = $id_cliente";
 $res = mysqli_query($conn, $sql);
 
-while ($row = mysqli_fetch_array($res)) {
-  $sql_update_produtos = "UPDATE produtos SET qtd_estoque = qtd_estoque + " . $row['quant_vendida'] . " WHERE cod = " . $row['id_produto'];
-  mysqli_query($conn, $sql_update_produtos);
-}
-
-mysqli_query($conn, "DELETE FROM intens_vendas WHERE id_venda = $id_venda");
-
-$sql = "DELETE FROM vendas WHERE numero = $id_venda";
-$res = mysqli_query($conn, $sql);
 
 if (mysqli_affected_rows($conn)) {
     $_SESSION['msg'] = '<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    Venda excluida com sucesso!
+    Cliente editado com sucesso!
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>';
 } else {
     $_SESSION['msg'] = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    Erro ao excluir Venda.
+    Erro ao editar cliente.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>';
 
 }
-exit(header("Location: ../../index.html#vendas"));
+exit(header("Location: ../../index.html#clientes"));

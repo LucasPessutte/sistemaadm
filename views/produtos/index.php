@@ -136,6 +136,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 </div>
                 <div class="modal-body">
                     <div class="row row-modal">
+                        <input type="hidden" name="id_produto_edit" id="id_produto_edit">
                         <div class="col-6">
                             <input type="text" name="nome_edit" id="nome_edit" class="form-control" placeholder="Nome" required>
                         </div>

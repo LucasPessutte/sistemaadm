@@ -59,6 +59,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <td><?= $row['prazo_entrega'] ?></td>
                                 <td><?= $row['cond_pagto'] ?></td>
                                 <td class="text-center">
+                                    <a href="#" onclick="visualizarVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-eye"></i></a>
                                     <a href="#" onclick="deleteVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
@@ -187,53 +188,24 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 </div>
 
 
-<!-- EDITAR VENDA -->
-<!-- <div class="modal fade" id="editarVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+<!-- Visualizar VENDA -->
+<div class="modal fade" id="visualizarVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form action="./php/vendas/edit_vendas.php" method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edição de Venda</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id_venda_edit" id="id_venda_edit">
-                    <div class="row row-modal">
-                        <div class="col-4">
-                            <input type="text" name="id_vendedor_edit" id="id_vendedor_edit" class="form-control" placeholder="ID vendedor" required>
-                        </div>
-                        <div class="col-4">
-                            <input type="text" name="id_cliente_edit" id="id_cliente_edit" class="form-control" placeholder="ID Cliente" required>
-                        </div>
-                        <div class="col-4">
-                            <input type="date" name="data_edit" id="data_edit" class="form-control" placeholder="DD/MM/AAAA">
-                        </div>
-                    </div>
-                    <div class="row row-modal">
-                        <div class="col-4">
-                            <input type="date" name="prazo_pagto_edit" id="prazo_pagto_edit" class="form-control" placeholder="Prazo de pagamento" required>
-                        </div>
-                        <div class="col-4">
-                            <select type="text" name="cond_pagto_edit" id="cond_pagto_edit" class="form-control" placeholder="Condição de pagamento" required>
-                                <option value="credito">Crédito</option>
-                                <option value="debito">Débito</option>
-                                <option value="cheque">Cheque</option>
-                                <option value="trasferencia">Transferência bancária</option>
-                                <option value="boleto">Boleto</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
+            <div class="modal-header">
+                <h5 class="modal-title">Visualização Venda</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="visualiza_venda">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
         </div>
     </div>
-</div> -->
+</div>
 
 <!-- EXCLUIR VENDA -->
 <div class="modal fade" id="excluirVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
@@ -287,13 +259,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         $('#editarVenda').modal('show')
     }
 
-    async function deleteVenda(id_venda) {
-        await $.get('php/vendas/getVenda.php?id_venda=' + id_venda, function(data) {
-            var json = JSON.parse(data);
-            console.log(data)
-            $('#id_venda_delete').val(id_venda);
-        })
-
+    function deleteVenda(id_venda) {
+        $('#id_venda_delete').val(id_venda);
         $('#excluirVenda').modal('show')
     }
 
@@ -363,14 +330,14 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         altera_valor_final(complemento)
     }
 
-    function altera_valor_final(complemento="") {
+    function altera_valor_final(complemento = "") {
         var valor_final = 0;
         var qtd_produtos = parseInt($('#qtd_produtos' + complemento).val())
         var qtd_produtos_aux = qtd_produtos
 
         for (var i = 1; i <= qtd_produtos_aux; i++) {
             if ($('#id_produto_' + i).length) {
-                if($('#id_produto_' + i).val() !== ""){
+                if ($('#id_produto_' + i).val() !== "") {
                     valor_final += parseFloat($('#preco_produto_' + i + complemento).val()) * parseInt($('#qtd_produto_' + i + complemento).val())
                 }
             } else {
@@ -379,8 +346,13 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             }
         }
 
-        console.log(valor_final)
-
         $('#valor-final' + complemento).val(valor_final.toFixed(2))
+    }
+
+    async function visualizarVenda(id_venda) {
+        await $.get('php/vendas/getVenda.php?id_venda=' + id_venda, function(data) {
+            $('#visualiza_venda').html(data)
+        })
+        $('#visualizarVenda').modal('show');
     }
 </script>
