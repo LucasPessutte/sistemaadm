@@ -4,7 +4,7 @@ $id_venda = $_GET['id_venda'];
 
 $sql = "SELECT 
             v.data, 
-            v.prazo_entrega, 
+            v.prazo_pagto, 
             v.cond_pagto, 
             vend.nome as nome_vendedor, 
             c.nome as nome_cliente
@@ -43,7 +43,7 @@ $valor_final = 0;
     <div class="row row-modal">
         <div class="col-6">
             <label for="">Prazo entrega</label>
-            <input type="date" class="form-control" value="<?= $row['prazo_entrega'] ?>" disabled>
+            <input type="date" class="form-control" value="<?= $row['prazo_pagto'] ?>" disabled>
         </div>
         <div class="col-6">
             <label for="">Forma pagamento</label>

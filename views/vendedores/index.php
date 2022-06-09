@@ -78,25 +78,31 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <div class="modal-body">
                     <div class="row row-modal">
                         <div class="col-12">
-                            <input type="text" name="nome" class="form-control" placeholder="Nome" required>
+                            <label for="nome">Nome</label>
+                            <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome" required>
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-6">
+                            <label for="celular">Celular</label>
                             <input type="text" id="celular" name="celular" class="form-control" placeholder="(00) 00000-0000" required>
                         </div>
                         <div class="col-6">
-                            <input type="number" step="0.01" name="porcentagemVenda" onkeyup="casasDecimais(this)" class="form-control" placeholder="Porcentagem por venda">
+                            <label for="porcentagemVenda">Porcentagem Venda</label>
+                            <input type="number" step="0.01" id="porcentagemVenda" name="porcentagemVenda" onkeyup="casasDecimais(this)" class="form-control" placeholder="Porcentagem por venda">
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-4">
-                            <input type="text" name="endereco" class="form-control" placeholder="Endereco" required>
+                            <label for="endereco">Endereço</label>
+                            <input type="text" id="endereco" name="endereco" class="form-control" placeholder="Endereco" required>
                         </div>
                         <div class="col-4">
-                            <input type="text" name="cidade" class="form-control" placeholder="Cidade" required>
+                            <label for="cidade">Cidade</label>
+                            <input type="text" id="cidade" name="cidade" class="form-control" placeholder="Cidade" required>
                         </div>
                         <div class="col-4">
+                            <label for="estado">Estado</label>
                             <select id="estado" name="estado" class="form-control" required>
                                 <option value="AC">Acre</option>
                                 <option value="AL">Alagoas</option>
@@ -153,25 +159,31 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     <input type="hidden" name="id_vendedor_edit" id="id_vendedor_edit">
                     <div class="row row-modal">
                         <div class="col-12">
+                            <label for="nome_edit">Nome</label>
                             <input type="text" name="nome_edit" id="nome_edit" class="form-control" placeholder="Nome" required>
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-6">
+                            <label for="celular_edit">Celular</label>
                             <input type="text" name="celular_edit" id="celular_edit" class="form-control" placeholder="(00) 00000-0000" required>
                         </div>
                         <div class="col-6">
+                            <label for="porcentagemVenda_edit">Porcentagem Venda</label>
                             <input type="number" step="0.01" name="porcentagemVenda_edit" id="porcentagemVenda_edit" onkeyup="casasDecimais(this)" class="form-control" placeholder="Porcentagem por venda">
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-4">
+                            <label for="endereco_edit">Endereco</label>
                             <input type="text" name="endereco_edit" id="endereco_edit" class="form-control" placeholder="Endereco" required>
                         </div>
                         <div class="col-4">
+                            <label for="cidade_edit">Cidade</label>
                             <input type="text" name="cidade_edit" id="cidade_edit" class="form-control" placeholder="Cidade" required>
                         </div>
                         <div class="col-4">
+                            <label for="estado_edit">Estado</label>
                             <select id="estado_edit" name="estado_edit" class="form-control" required>
                                 <option value="AC">Acre</option>
                                 <option value="AL">Alagoas</option>

@@ -56,7 +56,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                 <td><?= $row['id_vendedor'] ?></td>
                                 <td><?= $row['id_cliente'] ?></td>
                                 <td><?= $row['data'] ?></td>
-                                <td><?= $row['prazo_entrega'] ?></td>
+                                <td><?= date('d/m/y', strtotime($row['prazo_pagto'])) ?></td>
                                 <td><?= $row['cond_pagto'] ?></td>
                                 <td class="text-center">
                                     <a href="#" onclick="visualizarVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-eye"></i></a>
@@ -81,7 +81,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 <div class="modal fade" id="cadastroVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <form action="./php/vendas/cadastro.php" method="POST">
+            <form action="./php/vendas/cadastro.php" id="form-cadastro" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title">Cadastro de Venda</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
@@ -180,7 +180,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" onclick="envia_formulario()" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>

@@ -38,7 +38,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                             <th scope="col">Categoria</th>
                             <th scope="col">Preço</th>
                             <th scope="col">QTD. Estoque</th>
-                            <th scope="col">Ações</th>  
+                            <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,17 +81,21 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <div class="modal-body">
                     <div class="row row-modal">
                         <div class="col-6">
-                            <input type="text" name="nome" class="form-control" placeholder="Nome" required>
+                            <label for="nome">Nome</label>
+                            <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome" required>
                         </div>
                         <div class="col-6">
+                            <label for="preco">Preço</label>
                             <input type="number" step="0.01" id="preco" name="preco" onkeyup="casasDecimais(this)" class="form-control" placeholder="R$ 0.00">
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-6">
-                            <input type="number" name="qtd_estoque" class="form-control" step="1" placeholder="Quantidade no estoque" required>
+                            <label for="qtd_estoque">Qtd. Estoque</label>
+                            <input type="number" id="qtd_estoque" name="qtd_estoque" class="form-control" step="1" placeholder="Quantidade no estoque" required>
                         </div>
                         <div class="col-6">
+                            <label for="unidade_medida">Unidade Medida</label>
                             <select id="unidade_medida" name="unidade_medida" class="form-control" required>
                                 <option value="">Selecione Alguma medida</option>
                                 <option value="L">L</option>
@@ -103,12 +107,74 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     </div>
                     <div class="row row-modal">
                         <div class="col-12">
+                            <label for="id_categoria">Categoria</label>
                             <select id="id_categoria" name="id_categoria" class="form-control" required>
                                 <option value="">Selecione uma categoria</option>
                                 <?php
                                 while ($row = mysqli_fetch_array($res_categoria)) {
                                 ?>
-                                <option value="<?= $row['id'] ?>"><?= $row['descricao'] ?></option>
+                                    <option value="<?= $row['id'] ?>"><?= $row['descricao'] ?></option>
+
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editarProduto" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form action="./php/produtos/editProduto.php" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edição de produto</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row row-modal">
+                        <input type="hidden" name="id_produto_edit" id="id_produto_edit">
+                        <div class="col-6">
+                            <label for="nome_edit">Nome</label>
+                            <input type="text" name="nome_edit" id="nome_edit" class="form-control" placeholder="Nome" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="preco_edit">Preço</label>
+                            <input type="number" step="0.01" id="preco_edit" name="preco_edit" onkeyup="casasDecimais(this)" class="form-control" placeholder="R$ 0.00">
+                        </div>
+                    </div>
+                    <div class="row row-modal">
+                        <div class="col-6">
+                            <label for="qtd_estoque_edit">Qtd. Estoque</label>
+                            <input type="number" name="qtd_estoque_edit" id="qtd_estoque_edit" class="form-control" step="1" placeholder="Quantidade no estoque" required>
+                        </div>
+                        <div class="col-6">
+                            <label for="unidade_medida_edit">Undiade Medida</label>
+                            <select id="unidade_medida_edit" name="unidade_medida_edit" class="form-control" required>
+                                <option value="">Selecione alguma medida</option>
+                                <option value="L">L</option>
+                                <option value="ML">ML</option>
+                                <option value="UN">UN</option>
+                                <option value="MG">MG</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row row-modal">
+                        <div class="col-12">
+                            <label for="categoria_edit">Categoria</label>
+                            <select id="categoria_edit" name="categoria_edit" class="form-control" required>
+                                <option value="">Selecione uma categoria</option>
+                                <?php
+                                while ($row = mysqli_fetch_array($res_categoria_edit)) {
+                                ?>
+                                    <option value="<?= $row['id'] ?>"><?= $row['descricao'] ?></option>
 
                                 <?php } ?>
                             </select>
@@ -124,72 +190,20 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     </div>
 </div>
 
-<div class="modal fade" id="editarProduto" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <form action="./php/clientes/edit_cliente.php" method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edição de Cliente</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row row-modal">
-                        <input type="hidden" name="id_produto_edit" id="id_produto_edit">
-                        <div class="col-6">
-                            <input type="text" name="nome_edit" id="nome_edit" class="form-control" placeholder="Nome" required>
-                        </div>
-                        <div class="col-6">
-                            <input type="number" step="0.01" id="preco_edit" name="preco_edit" onkeyup="casasDecimais(this)" class="form-control" placeholder="R$ 0.00">
-                        </div>
-                    </div>
-                    <div class="row row-modal">
-                        <div class="col-6">
-                            <input type="number" name="qtd_estoque_edit" id="qtd_estoque_edit" class="form-control" step="1" placeholder="Quantidade no estoque" required>
-                        </div>
-                        <div class="col-6">
-                            <select id="unidade_medida_edit" name="unidade_medida_edit" class="form-control" required>
-                                <option value="">Selecione Alguma medida</option>
-                                <option value="L">L</option>
-                                <option value="ML">ML</option>
-                                <option value="UN">UN</option>
-                                <option value="MG">MG</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row row-modal">
-                        <div class="col-12">
-                            <select id="categoria_edit" name="categoria_edit" class="form-control" required>
-                                <option value="">Selecione uma categoria</option>
 
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="excluirCliente" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+<div class="modal fade" id="excluirProduto" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="./php/clientes/delete_cliente.php" method="POST">
+            <form action="./php/produtos/delete_produto.php" method="POST">
                 <div class="modal-header">
-                    <h5 class="modal-title">Exclusão de Cliente</h5>
+                    <h5 class="modal-title">Exclusão de produto</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id_cliente_delete" id="id_cliente_delete">
-                    <p>Você deseja realmente exluir o cliente <span class="text-primary" id="nome_cliente_delete"></span></p>
+                    <input type="hidden" name="id_produto_delete" id="id_produto_delete">
+                    <p>Você deseja realmente exluir o produto <span class="text-primary" id="nome_produto_delete"></span></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -248,18 +262,18 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             $('#unidade_medida_edit').val(json.unidade_medida);
             $('#categoria_edit').val(json.categoria);
         })
-
         $('#editarProduto').modal('show')
+
     }
 
-    async function deleteProduto(id_cliente) {
-        await $.get('php/clientes/getCliente.php?id_cliente=' + id_cliente, function(data) {
+    function deleteProduto(id_produto) {
+        $.get('php/produtos/getProdutos.php?id_produto=' + id_produto, function(data) {
             var json = JSON.parse(data);
             console.log(data)
-            $('#id_cliente_delete').val(id_cliente);
-            $('#nome_cliente_delete').html(json.nome);
+            $('#id_produto_delete').val(id_produto);
+            $('#nome_produto_delete').html(json.nome);
         })
 
-        $('#excluirCliente').modal('show')
+        $('#excluirProduto').modal('show')
     }
 </script>

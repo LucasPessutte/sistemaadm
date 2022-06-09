@@ -79,31 +79,39 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <div class="modal-body">
                     <div class="row row-modal">
                         <div class="col-6">
-                            <input type="text" name="nome" class="form-control" placeholder="Nome" required>
+                            <label for="nome">Nome</label>
+                            <input type="text" id="nome" name="nome" class="form-control" placeholder="Nome" required>
                         </div>
                         <div class="col-6">
-                            <input type="cpf" name="cpf" class="form-control" placeholder="000.000.000-00" required>
+                            <label for="cpf">CPF</label>
+                            <input type="text" name="cpf" id="cpf" class="form-control" placeholder="000.000.000-00" required>
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-4">
-                            <input type="text" name="email" class="form-control" placeholder="exemplo@exemplo.com" required>
+                            <label for="email">Email</label>
+                            <input type="text" id="email" name="email" class="form-control" placeholder="exemplo@exemplo.com" required>
                         </div>
                         <div class="col-4">
-                            <input type="text" name="celular" class="form-control" placeholder="(00) 00000-0000" required>
+                            <label for="celular">Celular</label>
+                            <input type="text" id="celular" name="celular" class="form-control" placeholder="(00) 00000-0000" required>
                         </div>
                         <div class="col-4">
-                            <input type="number" step="0.01" name="limiteCredito" onkeyup="casasDecimais(this)" class="form-control" placeholder="R$ 0.00">
+                            <label for="limiteCredito">Limite Crédito</label>
+                            <input type="number" step="0.01" id="limiteCredito" name="limiteCredito" onkeyup="casasDecimais(this)" class="form-control" placeholder="R$ 0.00">
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-4">
-                            <input type="text" name="endereco" class="form-control" placeholder="Endereco" required>
+                            <label for="endereco">Endereço</label>
+                            <input type="text" name="endereco" id="endereco" class="form-control" placeholder="Endereco" required>
                         </div>
                         <div class="col-4">
-                            <input type="text" name="cidade" class="form-control" placeholder="Cidade" required>
+                            <label for="cidade">Cidade</label>
+                            <input type="text" id="cidade" name="cidade" class="form-control" placeholder="Cidade" required>
                         </div>
                         <div class="col-4">
+                            <label for="estado">Estado</label>
                             <select id="estado" name="estado" class="form-control" required>
                                 <option value="AC">Acre</option>
                                 <option value="AL">Alagoas</option>
@@ -160,31 +168,39 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     <input type="hidden" name="id_cliente_edit" id="id_cliente_edit">
                     <div class="row row-modal">
                         <div class="col-6">
+                            <label for="nome_edit">Nome</label>
                             <input type="text" name="nome_edit" id="nome_edit" class="form-control" placeholder="Nome" required>
                         </div>
                         <div class="col-6">
-                            <input type="cpf" name="cpf_edit" id="cpf_edit" class="form-control" placeholder="000.000.000-00" required>
+                            <label for="cpf_edit">CPF</label>
+                            <input type="text" name="cpf_edit" id="cpf_edit" class="form-control" placeholder="000.000.000-00" required>
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-4">
+                            <label for="email_edit">Email</label>
                             <input type="text" name="email_edit" id="email_edit" class="form-control" placeholder="exemplo@exemplo.com" required>
                         </div>
                         <div class="col-4">
+                            <label for="celular_edit">Celular</label>
                             <input type="text" name="celular_edit" id="celular_edit" class="form-control" placeholder="(00) 00000-0000" required>
                         </div>
                         <div class="col-4">
+                            <label for="email_edit">Limite Crédito</label>
                             <input type="number" step="0.01" name="limiteCredito_edit" id="limiteCredito_edit" onkeyup="casasDecimais(this)" class="form-control" placeholder="R$ 0.00">
                         </div>
                     </div>
                     <div class="row row-modal">
                         <div class="col-4">
+                            <label for="endereco_edit">Endereço</label>
                             <input type="text" name="endereco_edit" id="endereco_edit" class="form-control" placeholder="Endereco" required>
                         </div>
                         <div class="col-4">
+                            <label for="cidade_edit">Cidade</label>
                             <input type="text" name="cidade_edit" id="cidade_edit" class="form-control" placeholder="Cidade" required>
                         </div>
                         <div class="col-4">
+                            <label for="estado_edit">Estado</label>
                             <select id="estado_edit" name="estado_edit" class="form-control" required>
                                 <option value="AC">Acre</option>
                                 <option value="AL">Alagoas</option>
@@ -260,8 +276,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
             }
         })
-        $('input[name="cpf"]').mask('999.999.999-99')
-        $('input[name="celular]"').mask('(99) 9 9999-9999')
+        $('#cpf').mask('999.999.999-99')
+        $('#celular').mask('(99) 9 9999-9999')
 
         $('#cpf_edit').mask('999.999.999-99')
         $('#celular_edit').mask('(99) 9 9999-9999')

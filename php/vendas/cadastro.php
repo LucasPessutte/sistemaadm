@@ -12,7 +12,7 @@
 
     $qtd_produtos = $_POST['qtd_produtos'];
 
-    $sql = "INSERT INTO vendas(id_vendedor,id_cliente,data,prazo_entrega,cond_pagto) VALUES('$id_vendedor', '$id_cliente', '$data', '$prazo_pagto', '$cond_pagto');";
+    $sql = "INSERT INTO vendas(id_vendedor,id_cliente,data,prazo_pagto,cond_pagto) VALUES('$id_vendedor', '$id_cliente', '$data', '$prazo_pagto', '$cond_pagto');";
     $res = mysqli_query($conn, $sql);
     $ultimo_id_venda = mysqli_insert_id($conn);
 
