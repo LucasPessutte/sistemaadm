@@ -291,7 +291,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     function edit(id_vendedor) {
         $.get('php/vendedores/getVendedor.php?id_vendedor=' + id_vendedor, function(data) {
             var json = JSON.parse(data);
-            console.log(data)
             $('#id_vendedor_edit').val(id_vendedor);
             $('#nome_edit').val(json.nome);
             $('#email_edit').val(json.email);

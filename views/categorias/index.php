@@ -17,7 +17,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     ?>
     <div class="card shadow mb-4" style="height: 100%;">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary text">Consultar <span class="text-complete">Clientes</span></h6>
+            <h6 class="m-0 font-weight-bold text-primary text">Consultar <span class="text-complete">Categorias</span></h6>
             <div class="nav-search-btn">
                 <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroCategoria">
                     <i class="fas fa-plus"></i>
@@ -116,7 +116,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         <div class="modal-content">
             <form action="./php/categorias/delete_categoria.php" method="POST">
                 <div class="modal-header">
-                    <h5 class="modal-title">Exclusão de Cliente</h5>
+                    <h5 class="modal-title">Exclusão de categoria</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                         <span aria-hidden="true">&times;</span>
                     </button>

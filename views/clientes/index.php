@@ -19,45 +19,54 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary text">Consultar <span class="text-complete">Clientes</span></h6>
             <div class="nav-search-btn">
-                <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroCliente">
-                    <i class="fas fa-plus"></i>
-                    <span>Cadastrar Cliente</span>
-                </button>
+                <div class="row">
+                    <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroCliente">
+                        <i class="fas fa-plus"></i>
+                        <span>Cadastrar Cliente</span>
+                    </button>
+                    <button class="btn btn-info btn-style" data-toggle="modal" data-target="#filtrosCliente">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    <button id="remove_filtro" class="btn btn-info btn-style hide" onclick="filtro('remove')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
+
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table" id="dataTableClient" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th scope="col">CPF</th>
-                            <th scope="col">Nome</th>
-                            <th scope="col">E-mail</th>
-                            <th scope="col">Cidade</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        while ($row = mysqli_fetch_array($res)) { ?>
-
+            <div id="conteudoClientes">
+                <div class="table-responsive">
+                    <table class="table" id="dataTableClient" width="100%" cellspacing="0">
+                        <thead>
                             <tr>
-                                <td><?= $row['cpf'] ?></td>
-                                <td><?= $row['nome'] ?></td>
-                                <td><?= $row['email'] ?></td>
-                                <td><?= $row['cidade'] ?></td>
-                                <td><?= $row['estado'] ?></td>
-                                <td class="text-center">
-                                    <a href="#" onclick="edit('<?= $row['codigo'] ?>')"><i class="far fa-edit"></i></a>
-                                    <a href="#" onclick="deleteCliente('<?= $row['codigo'] ?>')" class="pl-2"><i class="fas fa-trash"></i></a>
-                                </td>
+                                <th scope="col">CPF</th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">E-mail</th>
+                                <th scope="col">Cidade</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Ações</th>
                             </tr>
-
-                        <?php }
-                        ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php
+                            while ($row = mysqli_fetch_array($res)) { ?>
+                                <tr>
+                                    <td><?= $row['cpf'] ?></td>
+                                    <td><?= $row['nome'] ?></td>
+                                    <td><?= $row['email'] ?></td>
+                                    <td><?= $row['cidade'] ?></td>
+                                    <td><?= $row['estado'] ?></td>
+                                    <td class="text-center">
+                                        <a href="#" onclick="edit('<?= $row['codigo'] ?>')"><i class="far fa-edit"></i></a>
+                                        <a href="#" onclick="deleteCliente('<?= $row['codigo'] ?>')" class="pl-2"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            <?php }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
@@ -267,6 +276,31 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     </div>
 </div>
 
+<div class="modal fade" id="filtrosCliente" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtros por cliente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="nome_filtro">Nome</label>
+                        <input type="text" id="nome_filtro" name="nome_filtro" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" onclick="filtro()" class="btn btn-primary">Filtrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function() {
@@ -335,5 +369,20 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         })
 
         $('#excluirCliente').modal('show')
+    }
+
+    async function filtro(op = "") {
+        var nome_cliente = $('#nome_filtro').val()
+        await $.get('php/clientes/getFiltroCliente.php?nome_cliente=' + nome_cliente + '&op=' + op, function(data) {
+            $('#conteudoClientes').html(data)
+        })
+
+        if (op == 'remove'){
+            $('#remove_filtro').removeClass('show').addClass('hide')
+        }else{
+            $('#remove_filtro').removeClass('hide').addClass('show')
+            $('#filtrosCliente').modal('hide')
+        }
+
     }
 </script>

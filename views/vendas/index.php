@@ -180,7 +180,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="button" onclick="envia_formulario()" class="btn btn-primary">Salvar</button>
+                    <button type="button" id="salvar_form" onclick="envia_formulario(this)" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>
@@ -227,6 +227,25 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     <button type="submit" class="btn btn-primary">Excluir</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="msgVenda" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Limite de crédito insuficiente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>O cliente <span class="text-primary" id="cliente_limite"></span> não possui limite de crédito suficiente!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -354,5 +373,39 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             $('#visualiza_venda').html(data)
         })
         $('#visualizarVenda').modal('show');
+    }
+
+    async function envia_formulario(obj) {
+
+        var complemento = obj.id.split('_');
+
+        if (complemento.includes('edit')) {
+            complemento = "_edit"
+        } else {
+            complemento = ""
+        }
+
+        var validacaoForm = $('#form-cadastro')[0].reportValidity();
+        if (validacaoForm) {
+            var id_cliente = $('#id_cliente' + complemento).val()
+            var valor_final = parseFloat($('#valor-final' + complemento).val());
+            var infos = await $.get('php/clientes/getCliente.php?id_cliente=' + id_cliente, function(data) {
+                return JSON.parse(data);
+
+            })
+
+            infos = JSON.parse(infos)
+
+            console.log(valor_final)
+            console.log(infos.limite_credito)
+            if(valor_final <= parseFloat(infos.limite_credito)){
+                $('#form-cadastro').submit()
+            }else{
+                $("#cliente_limite").html(infos.nome)
+                $("#msgVenda").modal('show')
+            }
+
+        }
+
     }
 </script>

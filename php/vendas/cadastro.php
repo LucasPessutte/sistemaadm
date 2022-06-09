@@ -31,7 +31,7 @@
     }
 
     
-    if(mysqli_insert_id($conn)){
+    if($ultimo_id_venda !== 0 && $ultimo_id_venda !== null){
         $_SESSION['msg'] = '<div class="alert alert-primary alert-dismissible fade show" role="alert">
         Venda cadastrada com sucesso!
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
