@@ -5,6 +5,7 @@ $res = mysqli_query($conn, $sql);
 $sql = "SELECT * FROM categoria";
 $res_categoria = mysqli_query($conn, $sql);
 $res_categoria_edit = mysqli_query($conn, $sql);
+$res_categoria_filtro = mysqli_query($conn, $sql);
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
@@ -22,46 +23,54 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary text">Consultar <span class="text-complete">Produtos</span></h6>
             <div class="nav-search-btn">
-                <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroProduto">
-                    <i class="fas fa-plus"></i>
-                    <span>Cadastrar Produto</span>
-
-                </button>
+                <div class="row">
+                    <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroProduto">
+                        <i class="fas fa-plus"></i>
+                        <span>Cadastrar Produto</span>
+                    </button>
+                    <button class="btn btn-info btn-style" data-toggle="modal" data-target="#filtrosProduto">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    <button id="remove_filtro" class="btn btn-info btn-style hide" onclick="filtro('remove')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table" id="dataTableClient" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nome</th>
-                            <th scope="col">Categoria</th>
-                            <th scope="col">Preço</th>
-                            <th scope="col">QTD. Estoque</th>
-                            <th scope="col">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        while ($row = mysqli_fetch_array($res)) { ?>
-
+            <input type="hidden" id="id_categoria_pagina" value="0">
+            <div id="conteudoProdutos">
+                <div class="table-responsive">
+                    <table class="table" id="dataTableProduto" width="100%" cellspacing="0">
+                        <thead>
                             <tr>
-                                <td><?= $row['nome'] ?></td>
-                                <td><?= $row['categoria'] ?></td>
-                                <td>R$<?= $row['preco'] ?></td>
-                                <td><?= $row['qtd_estoque'] . $row['unidade_medida'] ?></td>
-                                <td class="text-center">
-                                    <a href="#" onclick="edit('<?= $row['cod'] ?>')"><i class="far fa-edit"></i></a>
-                                    <a href="#" onclick="deleteProduto('<?= $row['cod'] ?>')" class="pl-2"><i class="fas fa-trash"></i></a>
-                                </td>
+                                <th scope="col">Nome</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Preço</th>
+                                <th scope="col">QTD. Estoque</th>
+                                <th scope="col">Ações</th>
                             </tr>
-
-                        <?php }
-                        ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php
+                            while ($row = mysqli_fetch_array($res)) { ?>
+                                <tr>
+                                    <td><?= $row['nome'] ?></td>
+                                    <td><?= $row['categoria'] ?></td>
+                                    <td>R$<?= $row['preco'] ?></td>
+                                    <td><?= $row['qtd_estoque'] . $row['unidade_medida'] ?></td>
+                                    <td class="text-center">
+                                        <a href="#" onclick="edit('<?= $row['cod'] ?>')"><i class="far fa-edit"></i></a>
+                                        <a href="#" onclick="deleteProduto('<?= $row['cod'] ?>')" class="pl-2"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            <?php }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
+            <button class="btn btn-primary" onclick="gerar_pdf()">Gerar Relatório</button>
         </div>
     </div>
 </div>
@@ -76,6 +85,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     <h5 class="modal-title">Cadastro de Produtos</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                         <span aria-hidden="true">&times;</span>
+                    </button>
+                    <button id="remove_filtro" class="btn btn-info btn-style hide" onclick="filtro('remove')">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -214,10 +226,44 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     </div>
 </div>
 
+<div class="modal fade" id="filtrosProduto" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtros Produto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="id_categoria_filtro">Categoria</label>
+                        <select id="id_categoria_filtro" name="id_categoria_filtro" class="form-control">
+                            <option value="">Selecione uma categoria</option>
+                            <?php
+                            while ($row = mysqli_fetch_array($res_categoria_filtro)) {
+                            ?>
+                                <option value="<?= $row['id'] ?>"><?= $row['descricao'] ?></option>
+
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" onclick="filtro()" class="btn btn-primary">Filtrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <script>
     $(document).ready(function() {
-        $('#dataTableClient').DataTable({
+        $('#dataTableProduto').DataTable({
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json"
 
@@ -275,5 +321,32 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         })
 
         $('#excluirProduto').modal('show')
+    }
+
+    async function filtro(op = "") {
+        var id_categoria = $('#id_categoria_filtro').val()
+        await $.get('php/produtos/getFiltroProduto.php?id_categoria=' + id_categoria + '&op=' + op, function(data) {
+            $('#conteudoProdutos').html(data)
+        })
+
+        if (op == 'remove') {
+            $('#remove_filtro').removeClass('show').addClass('hide')
+            $('#id_categoria_pagina').val(0)
+        } else {
+            if(id_categoria !== ""){
+                $('#id_categoria_pagina').val(id_categoria)
+                $('#remove_filtro').removeClass('hide').addClass('show')
+            }else{
+                $('#id_categoria_pagina').val(0)
+                $('#remove_filtro').removeClass('show').addClass('hide')
+            }
+            $('#filtrosProduto').modal('hide')
+        }
+
+    }
+
+    function gerar_pdf(){
+        var id_categoria = parseInt($('#id_categoria_pagina').val());
+        window.open('./views/produtos/relatorio.php?id_categoria=' + id_categoria)
     }
 </script>

@@ -31,45 +31,49 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroVenda">
                     <i class="fas fa-plus"></i>
                     <span>Cadastrar Vendas</span>
-
+                </button>
+                <button class="btn btn-info btn-style" data-toggle="modal" data-target="#filtrosVenda">
+                    <i class="fas fa-filter"></i>
+                </button>
+                <button id="remove_filtro" class="btn btn-info btn-style hide" onclick="filtro('remove')">
+                    <i class="fas fa-times"></i>
                 </button>
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table" id="dataTableVenda" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID Vendedor</th>
-                            <th scope="col">ID Cliente</th>
-                            <th scope="col">Data</th>
-                            <th scope="col">Prazo de Pagamento</th>
-                            <th scope="col">Condição de Pagamento</th>
-                            <th scope="col">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        while ($row = mysqli_fetch_array($res)) { ?>
-
+            <div id="conteudoVendas">
+                <div class="table-responsive">
+                    <table class="table" id="dataTableVenda" width="100%" cellspacing="0">
+                        <thead>
                             <tr>
-                                <td><?= $row['id_vendedor'] ?></td>
-                                <td><?= $row['id_cliente'] ?></td>
-                                <td><?= $row['data'] ?></td>
-                                <td><?= date('d/m/y', strtotime($row['prazo_pagto'])) ?></td>
-                                <td><?= $row['cond_pagto'] ?></td>
-                                <td class="text-center">
-                                    <a href="#" onclick="visualizarVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-eye"></i></a>
-                                    <a href="#" onclick="deleteVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-trash"></i></a>
-                                </td>
+                                <th scope="col">ID Vendedor</th>
+                                <th scope="col">ID Cliente</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Prazo de Pagamento</th>
+                                <th scope="col">Condição de Pagamento</th>
+                                <th scope="col">Ações</th>
                             </tr>
-
-                        <?php }
-                        ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php
+                            while ($row = mysqli_fetch_array($res)) { ?>
+                                <tr>
+                                    <td><?= $row['id_vendedor'] ?></td>
+                                    <td><?= $row['id_cliente'] ?></td>
+                                    <td><?= $row['data'] ?></td>
+                                    <td><?= date('d/m/y', strtotime($row['prazo_pagto'])) ?></td>
+                                    <td><?= $row['cond_pagto'] ?></td>
+                                    <td class="text-center">
+                                        <a href="#" onclick="visualizarVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-eye"></i></a>
+                                        <a href="#" onclick="deleteVenda(<?= $row['numero'] ?>)" class="pl-2"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            <?php }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -250,6 +254,39 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     </div>
 </div>
 
+<div class="modal fade" id="filtrosVenda" tabindex="-1" role="dialog" aria-labelledby="TituloModalCentralizado" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtros Venda</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="id_categoria_filtro">Categoria</label>
+                        <select id="id_categoria_filtro" name="id_categoria_filtro" class="form-control">
+                            <option value="">Selecione uma categoria</option>
+                            <?php
+                            while ($row = mysqli_fetch_array($res_categoria_filtro)) {
+                            ?>
+                                <option value="<?= $row['id'] ?>"><?= $row['descricao'] ?></option>
+
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" onclick="filtro()" class="btn btn-primary">Filtrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
     // var valor_final = 0
@@ -398,13 +435,28 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
             console.log(valor_final)
             console.log(infos.limite_credito)
-            if(valor_final <= parseFloat(infos.limite_credito)){
+            if (valor_final <= parseFloat(infos.limite_credito)) {
                 $('#form-cadastro').submit()
-            }else{
+            } else {
                 $("#cliente_limite").html(infos.nome)
                 $("#msgVenda").modal('show')
             }
 
+        }
+
+    }
+
+    async function filtro(op = "") {
+        var id_categoria = $('#id_categoria_filtro').val()
+        await $.get('php/vendas/getFiltroVenda.php?data=' + data + "&prazo_pagto=" + data_entrega + '&op=' + op, function(data) {
+            $('#conteudoVendas').html(data)
+        })
+
+        if (op == 'remove') {
+            $('#remove_filtro').removeClass('show').addClass('hide')
+        } else {
+            $('#remove_filtro').removeClass('hide').addClass('show')
+            $('#filtrosVenda').modal('hide')
         }
 
     }
