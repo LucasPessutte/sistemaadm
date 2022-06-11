@@ -163,10 +163,10 @@ $res = mysqli_query($conn, $sql);
                 orientation: 'portrait'
             }
         };
-        // html2pdf().from(invoice).set(opt).save();
+        html2pdf().from(invoice).set(opt).save();
 
-        // setTimeout(() => {
-        //     close();
-        // }, 1000);
+        setTimeout(() => {
+            close();
+        }, 1000);
     }
 </script>
