@@ -377,10 +377,14 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             $('#conteudoClientes').html(data)
         })
 
-        if (op == 'remove'){
+        if (op == 'remove') {
             $('#remove_filtro').removeClass('show').addClass('hide')
-        }else{
-            $('#remove_filtro').removeClass('hide').addClass('show')
+        } else {
+            if (nome_cliente !== "") {
+                $('#remove_filtro').removeClass('hide').addClass('show')
+            } else {
+                $('#remove_sfiltro').removeClass('show').addClass('hide')
+            }
             $('#filtrosCliente').modal('hide')
         }
 

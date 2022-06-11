@@ -1,6 +1,12 @@
 <?php
 include_once('../../conn/index.php');
-$sql = "SELECT * FROM vendas";
+$sql = "SELECT 
+            v.*,
+            vd.nome AS vendedor,
+            c.nome AS cliente
+        FROM vendas AS v
+        INNER JOIN vendedor AS vd ON v.id_vendedor = vd.cod
+        INNER JOIN cliente AS c ON v.id_cliente = c.codigo";
 $res = mysqli_query($conn, $sql);
 
 $sql_vendedor = "SELECT * FROM vendedor";
@@ -28,26 +34,30 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary text">Consultar <span class="text-complete">Vendas</span></h6>
             <div class="nav-search-btn">
-                <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroVenda">
-                    <i class="fas fa-plus"></i>
-                    <span>Cadastrar Vendas</span>
-                </button>
-                <button class="btn btn-info btn-style" data-toggle="modal" data-target="#filtrosVenda">
-                    <i class="fas fa-filter"></i>
-                </button>
-                <button id="remove_filtro" class="btn btn-info btn-style hide" onclick="filtro('remove')">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="row">
+                    <button class="btn btn-primary btn-style" data-toggle="modal" data-target="#cadastroVenda">
+                        <i class="fas fa-plus"></i>
+                        <span>Cadastrar Vendas</span>
+                    </button>
+                    <button class="btn btn-info btn-style" data-toggle="modal" data-target="#filtrosVenda">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                    <button id="remove_filtro" class="btn btn-info btn-style hide" onclick="filtro('remove')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="card-body">
+            <input type="hidden" id="data1_pagina" value="">
+            <input type="hidden" id="data2_pagina" value="">
             <div id="conteudoVendas">
                 <div class="table-responsive">
                     <table class="table" id="dataTableVenda" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th scope="col">ID Vendedor</th>
-                                <th scope="col">ID Cliente</th>
+                                <th scope="col">Vendedor</th>
+                                <th scope="col">Cliente</th>
                                 <th scope="col">Data</th>
                                 <th scope="col">Prazo de Pagamento</th>
                                 <th scope="col">Condição de Pagamento</th>
@@ -58,9 +68,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                             <?php
                             while ($row = mysqli_fetch_array($res)) { ?>
                                 <tr>
-                                    <td><?= $row['id_vendedor'] ?></td>
-                                    <td><?= $row['id_cliente'] ?></td>
-                                    <td><?= $row['data'] ?></td>
+                                    <td><?= $row['vendedor'] ?></td>
+                                    <td><?= $row['cliente'] ?></td>
+                                    <td><?= date('d/m/y', strtotime($row['data'])) ?></td>
                                     <td><?= date('d/m/y', strtotime($row['prazo_pagto'])) ?></td>
                                     <td><?= $row['cond_pagto'] ?></td>
                                     <td class="text-center">
@@ -74,6 +84,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     </table>
                 </div>
             </div>
+            <button class="btn btn-primary" onclick="gerar_pdf()">Gerar Relatório</button>
         </div>
     </div>
 </div>
@@ -265,17 +276,13 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-12">
-                        <label for="id_categoria_filtro">Categoria</label>
-                        <select id="id_categoria_filtro" name="id_categoria_filtro" class="form-control">
-                            <option value="">Selecione uma categoria</option>
-                            <?php
-                            while ($row = mysqli_fetch_array($res_categoria_filtro)) {
-                            ?>
-                                <option value="<?= $row['id'] ?>"><?= $row['descricao'] ?></option>
-
-                            <?php } ?>
-                        </select>
+                    <div class="col-6">
+                        <label for="data_1">De</label>
+                        <input type="date" id="data_1" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <label for="data_2">Até</label>
+                        <input type="date" id="data_2" class="form-control">
                     </div>
                 </div>
             </div>
@@ -289,8 +296,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 
 <script>
-    // var valor_final = 0
-
     $(document).ready(function() {
         $('#dataTableVenda').DataTable({
             "language": {
@@ -406,6 +411,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     }
 
     async function visualizarVenda(id_venda) {
+        console.log(id_venda);
         await $.get('php/vendas/getVenda.php?id_venda=' + id_venda, function(data) {
             $('#visualiza_venda').html(data)
         })
@@ -447,17 +453,31 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     }
 
     async function filtro(op = "") {
-        var id_categoria = $('#id_categoria_filtro').val()
-        await $.get('php/vendas/getFiltroVenda.php?data=' + data + "&prazo_pagto=" + data_entrega + '&op=' + op, function(data) {
+        var data1 = $('#data_1').val();
+        var data2 = $('#data_2').val();
+        await $.get('php/vendas/getFiltroVenda.php?data1=' + data1 + "&data2=" + data2 + '&op=' + op, function(data) {
             $('#conteudoVendas').html(data)
         })
 
         if (op == 'remove') {
             $('#remove_filtro').removeClass('show').addClass('hide')
         } else {
-            $('#remove_filtro').removeClass('hide').addClass('show')
+            if (data1 !== "" || data2 !== "") {
+                data1 !== "" ? $('#data1_pagina').val(data1) : $('#data2_pagina').val("")
+                data2 !== "" ? $('#data2_pagina').val(data2) : $('#data2_pagina').val("")
+                $('#remove_filtro').removeClass('hide').addClass('show')
+            } else {
+                $('#data1_pagina').val("")
+                $('#data2_pagina').val("")
+                $('#remove_filtro').removeClass('show').addClass('hide')
+            }
             $('#filtrosVenda').modal('hide')
         }
+    }
 
+    function gerar_pdf(){
+        var data1 = $('#data1_pagina').val();
+        var data2 = $('#data2_pagina').val();
+        window.open('./views/vendas/relatorio.php?data1=' + data1 + '&data2=' + data2)
     }
 </script>
