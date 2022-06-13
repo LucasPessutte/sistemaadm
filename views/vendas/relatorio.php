@@ -149,7 +149,7 @@ $res = mysqli_query($conn, $sql);
         const invoice = document.getElementById("conteudo-imp");
         var opt = {
             margin: 1,
-            filename: "Relatorio_produtos.pdf",
+            filename: "Relatorio_vendas.pdf",
             image: {
                 type: 'jpeg',
                 quality: 0.98
